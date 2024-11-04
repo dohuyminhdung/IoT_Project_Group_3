@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">An IoT App</string>
+    <!-- Mảng điều kiện loại -->
+    <string-array name="condition_types">
+        <item>Nhiệt độ</item>
+        <item>Độ sáng</item>
+        <item>Độ ẩm</item>
+    </string-array>
+    <!-- Mảng so sánh -->
+    <string-array name="comparison_types">
+        <item> &lt; </item>
+        <item> &gt; </item>
+        <item> = </item>
+    </string-array>
+    <!-- Mảng thiết bị -->
+    <string-array name="device_types">
+        <item>Device 1</item>
+        <item>Device 2</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -5,7 +5,23 @@
       <map>
         <entry key="..\:/An_IoT_App/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/DoAnTKLL/An_IoT_App/app/src/main/res/layout/activity_main.xml" value="0.15760869565217392" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/brightness_icon.xml" value="0.1984375" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/camera_icon.xml" value="0.15208333333333332" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/humidity_icon.xml" value="0.24010416666666667" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.1984375" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.15208333333333332" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/ic_baseline_restore_from_trash_24.xml" value="0.1984375" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.15052083333333333" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/leftarrow_icon.xml" value="0.1984375" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/scheduler_icon.xml" value="0.1984375" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/settings_icon.xml" value="0.15208333333333332" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/temperature_icon.xml" value="0.1984375" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/fragment_home.xml" value="0.2" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/fragment_scheduler.xml" value="0.10371376811594203" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/fragment_set_rule.xml" value="0.264" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/set_control_rule.xml" value="0.3201581027667984" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/menu/menu_bottom_nav.xml" value="0.4" />
       </map>
     </option>
   </component>
