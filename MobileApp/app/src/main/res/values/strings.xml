@@ -8,14 +8,18 @@
     </string-array>
     <!-- Mảng so sánh -->
     <string-array name="comparison_types">
+        <item> > </item>
         <item> &lt; </item>
-        <item> &gt; </item>
         <item> = </item>
     </string-array>
     <!-- Mảng thiết bị -->
     <string-array name="device_types">
-        <item>Device 1</item>
-        <item>Device 2</item>
+        <item>Thiết bị 1</item>
+        <item>Thiết bị 2</item>
+    </string-array>
+    <string-array name="turn_types">
+        <item>Bật</item>
+        <item>Tắt</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

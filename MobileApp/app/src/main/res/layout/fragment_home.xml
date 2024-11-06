@@ -1,0 +1,267 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="fragment.FragmentHome"
+    android:orientation="vertical"
+    android:background="#e4e9ee">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:layout_marginTop="10px"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="14">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="My Smart Room"
+                android:textSize="22dp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3">
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+        <!--LineChart-->
+        <!--com.github.mikephil.charting.charts.LineChart-->
+        <!--android:id="@+id/templineChart"-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="280px"
+                android:layout_height="200px"
+                android:src="@drawable/temperature_icon"
+                android:layout_weight="1"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Nhiệt Độ"
+                    android:textSize="12dp"
+                    android:textStyle="bold"
+                    android:textColor="#FF402E"
+                    android:gravity="center"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/txtTemperature"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="28°C"
+                    android:textSize="22dp"
+                    android:textStyle="bold"
+                    android:textColor="#FF420E"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="horizontal">
+
+        <!--LineChart-->
+        <!--com.github.mikephil.charting.charts.LineChart-->
+        <!--android:id="@+id/lumilineChart"-->
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical"></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="300px"
+                android:layout_height="200px"
+                android:src="@drawable/brightness_icon"
+                android:layout_weight="1"
+                android:layout_gravity="center"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Độ Sáng"
+                    android:textSize="12dp"
+                    android:textStyle="bold"
+                    android:textColor="#FFEC44"
+                    android:gravity="center"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/txtLightning"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="109"
+                    android:textSize="24dp"
+                    android:textStyle="bold"
+                    android:textColor="#FFEC44"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+        <!--LineChart-->
+        <!--com.github.mikephil.charting.charts.LineChart-->
+        <!--android:id="@+id/humiChart"-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="300px"
+                android:layout_height="76dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/humidity_icon" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Độ Ẩm"
+                    android:textSize="12dp"
+                    android:textStyle="bold"
+                    android:textColor="#4CB5F5"
+                    android:gravity="center"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/txtHumidity"
+                    android:layout_margin="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="40%"
+                    android:textSize="24dp"
+                    android:textStyle="bold"
+                    android:textColor="#4CB5F5"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <com.github.angads25.toggle.widget.LabeledSwitch
+                    android:id="@+id/switch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:textSize="14sp"
+                    app:on="false"
+                    app:colorBorder="@color/colorAccent"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <com.github.angads25.toggle.widget.LabeledSwitch
+                    android:id="@+id/switch2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:textSize="14sp"
+                    app:on="false"
+                    app:colorBorder="@color/colorAccent"/>
+            </LinearLayout>
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="0dp"-->
+            <!--                android:layout_weight="2">-->
+            <!--            </LinearLayout>-->
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3">
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

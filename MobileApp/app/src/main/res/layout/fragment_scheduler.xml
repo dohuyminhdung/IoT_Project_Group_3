@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="fragment.FragmentScheduler"
+    android:orientation="vertical"
+    android:background="#e4e9ee">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn thiết bị:"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <Spinner
+        android:id="@+id/spinnerDevice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:outlineAmbientShadowColor="@color/black"
+        android:outlineSpotShadowColor="@color/black"
+        android:entries="@array/device_types" />
+
+    <!-- Chọn Thời Gian -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn thời gian bật/tắt:"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:paddingTop="16dp" />
+
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:timePickerMode="spinner"
+        />
+
+    <!-- Nút để Thêm Hẹn Giờ -->
+    <Button
+        android:id="@+id/buttonSetTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thêm hẹn giờ"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp" />
+
+</LinearLayout>

@@ -1,0 +1,151 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="fragment.FragmentSetRule"
+    android:background="#e4e9ee"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:background="#ffffff"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_margin="15px"
+            android:layout_width="120px"
+            android:layout_height="match_parent"
+            android:src="@drawable/leftarrow_icon"/>
+        <TextView
+            android:layout_marginLeft="100px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Cài đặt tự động bật/tắt thiết bị"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:gravity="center|left"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120px"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="80px"
+                android:layout_height="120px"
+                android:layout_marginLeft="50px"
+                android:gravity="center_vertical"
+                android:text="Khi"
+                android:textColor="#000000"
+                android:textSize="15dp"
+                android:textStyle="bold"></TextView>
+            <!--            android:entries="@array/condition_types"-->
+            <Spinner
+                android:id="@+id/spinnerConditionType"
+                android:layout_width="wrap_content"
+                android:layout_height="120px"
+                android:entries="@array/condition_types"
+                android:gravity="left" />
+            <Spinner
+                android:id="@+id/comparison"
+                android:entries="@array/comparison_types"
+                android:layout_width="180px"
+                android:layout_height="120px"
+                android:gravity="left"/>
+            <EditText
+                android:id="@+id/Value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="Nhập giá trị..." />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120px"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="180px"
+                android:layout_height="120px"
+                android:layout_marginLeft="50px"
+                android:gravity="center_vertical"
+                android:text="tiến hành "
+                android:textColor="#000000"
+                android:textSize="15dp"
+                android:textStyle="bold"></TextView>
+
+            <Spinner
+                android:id="@+id/turnType"
+                android:layout_width="wrap_content"
+                android:layout_height="120px"
+                android:entries="@array/turn_types"
+                android:gravity="left" />
+
+            <Spinner
+                android:id="@+id/deviceType"
+                android:layout_width="wrap_content"
+                android:layout_height="120px"
+                android:entries="@array/device_types"
+                android:gravity="left" />
+            <Button
+                android:id="@+id/buttonAddSetting"
+                android:layout_width="180px"
+                android:layout_height="120px"
+                android:textSize="10dp"
+                android:text="Thêm"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="8dp"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="70px"
+            android:gravity="center"
+            android:text="Danh sách công việc"
+            android:textColor="#000000"
+            android:textSize="20dp"
+            android:textStyle="bold"></TextView>
+
+        <LinearLayout
+            android:id="@+id/task"
+            android:layout_width="match_parent"
+            android:layout_height="120px"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20px"
+                android:layout_weight="9"
+                android:gravity="center|left"
+                android:text="Khi nhiệt độ > 30°C => bật thiết bị 1"
+                android:textColor="#000000"
+                android:textSize="14dp"></TextView>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_marginRight="20px"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_trash">
+
+            </ImageView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
