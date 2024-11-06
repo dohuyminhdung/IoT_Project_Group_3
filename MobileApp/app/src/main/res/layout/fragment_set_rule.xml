@@ -33,10 +33,12 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="120px"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="80px"
                 android:layout_height="120px"
@@ -53,29 +55,33 @@
                 android:layout_height="120px"
                 android:entries="@array/condition_types"
                 android:gravity="left" />
+
             <Spinner
                 android:id="@+id/comparison"
-                android:entries="@array/comparison_types"
-                android:layout_width="180px"
+                android:layout_width="wrap_content"
                 android:layout_height="120px"
-                android:gravity="left"/>
+                android:entries="@array/comparison_types"
+                android:gravity="left" />
+
             <EditText
                 android:id="@+id/Value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="Nhập giá trị..." />
+                android:hint="Nhập giá trị..."
+                android:inputType="number" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="120px"
             android:orientation="horizontal">
+
             <TextView
-                android:layout_width="180px"
+                android:layout_width="wrap_content"
                 android:layout_height="120px"
                 android:layout_marginLeft="50px"
                 android:gravity="center_vertical"
-                android:text="tiến hành "
+                android:text="Tiến hành "
                 android:textColor="#000000"
                 android:textSize="15dp"
                 android:textStyle="bold"></TextView>
@@ -93,15 +99,16 @@
                 android:layout_height="120px"
                 android:entries="@array/device_types"
                 android:gravity="left" />
+
             <Button
                 android:id="@+id/buttonAddSetting"
-                android:layout_width="180px"
+                android:layout_width="wrap_content"
                 android:layout_height="120px"
-                android:textSize="10dp"
-                android:text="Thêm"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="4dp"
                 android:layout_marginTop="0dp"
-                android:layout_marginLeft="8dp"
-                android:layout_gravity="center_horizontal"/>
+                android:text="Thêm"
+                android:textSize="17px" />
         </LinearLayout>
     </LinearLayout>
 
@@ -120,32 +127,39 @@
             android:textSize="20dp"
             android:textStyle="bold"></TextView>
 
-        <LinearLayout
-            android:id="@+id/task"
+<!--        <LinearLayout-->
+<!--            android:id="@+id/task"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="120px"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <TextView-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_marginLeft="20px"-->
+<!--                android:layout_weight="9"-->
+<!--                android:gravity="center|left"-->
+<!--                android:text="Khi nhiệt độ > 30°C => bật thiết bị 1"-->
+<!--                android:textColor="#000000"-->
+<!--                android:textSize="14dp"></TextView>-->
+
+<!--            <ImageView-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="25dp"-->
+<!--                android:layout_marginRight="20px"-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:src="@drawable/ic_trash">-->
+
+<!--            </ImageView>-->
+<!--        </LinearLayout>-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewTasks"
             android:layout_width="match_parent"
-            android:layout_height="120px"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20px"
-                android:layout_weight="9"
-                android:gravity="center|left"
-                android:text="Khi nhiệt độ > 30°C => bật thiết bị 1"
-                android:textColor="#000000"
-                android:textSize="14dp"></TextView>
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="25dp"
-                android:layout_marginRight="20px"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_trash">
-
-            </ImageView>
-        </LinearLayout>
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:orientation="vertical">
+        </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 
 </LinearLayout>
