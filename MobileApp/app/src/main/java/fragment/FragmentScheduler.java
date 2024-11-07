@@ -2,14 +2,26 @@ package fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import adapter.SchedulerAdapter;
+import do_an.tkll.an_iot_app.AddSchedulerActivity;
 import do_an.tkll.an_iot_app.R;
+import do_an.tkll.an_iot_app.Scheduler;
 
+import android.content.Intent;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentScheduler#newInstance} factory method to
@@ -25,7 +37,11 @@ public class FragmentScheduler extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private static final int REQUEST_CODE_ADD_SCHEDULER = 1;
+    public RecyclerView recyclerViewSchedulers;
+    public SchedulerAdapter schedulerAdapter;
+    public ArrayList<Scheduler> schedulerList;
+    public FloatingActionButton fabAddScheduler;
     public FragmentScheduler() {
         // Required empty public constructor
     }
@@ -48,6 +64,7 @@ public class FragmentScheduler extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,5 +79,44 @@ public class FragmentScheduler extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_scheduler, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerViewSchedulers = view.findViewById(R.id.recyclerViewSchedulers);
+        fabAddScheduler = view.findViewById(R.id.fabAddScheduler);
+
+        schedulerList = new ArrayList<>(); // Lưu trữ danh sách hẹn giờ
+        schedulerAdapter = new SchedulerAdapter(getContext(), schedulerList);
+        recyclerViewSchedulers.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewSchedulers.setAdapter(schedulerAdapter);
+
+        fabAddScheduler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Chuyển đến AddSchedulerActivity để thêm hẹn giờ
+                Intent intent = new Intent(getContext(), AddSchedulerActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_ADD_SCHEDULER);
+            }
+        });
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_ADD_SCHEDULER && resultCode == AppCompatActivity.RESULT_OK && data != null) {
+            // Nhận dữ liệu từ AddSchedulerActivity
+            String deviceName = data.getStringExtra("deviceName");
+            String onOff = data.getStringExtra("onOff");
+            String time = data.getStringExtra("time");
+
+
+            // Tạo một đối tượng Scheduler mới và thêm vào danh sách
+            String description = onOff + " " + deviceName + " vào lúc " + time;
+            Scheduler newScheduler = new Scheduler(deviceName, time, description, onOff);
+            schedulerList.add(newScheduler);
+            schedulerAdapter.notifyItemInserted(schedulerList.size() - 1);
+        }
     }
 }

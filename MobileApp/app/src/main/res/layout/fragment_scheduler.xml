@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,43 +6,38 @@
     android:orientation="vertical"
     android:background="#e4e9ee">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chọn thiết bị:"
-        android:textColor="@color/black"
-        android:textSize="16sp" />
-
-    <Spinner
-        android:id="@+id/spinnerDevice"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:outlineAmbientShadowColor="@color/black"
-        android:outlineSpotShadowColor="@color/black"
-        android:entries="@array/device_types" />
-
-    <!-- Chọn Thời Gian -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chọn thời gian bật/tắt:"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:paddingTop="16dp" />
-
-    <!-- Nút để Thêm Hẹn Giờ -->
-    <TimePicker
-        android:id="@+id/timePicker"
+        android:layout_height="180px">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Lịch tự động bật/tắt các thiết bị"
+            android:textColor="@color/black"
+            android:textSize="60px"
+            android:gravity="center"
+            android:layout_marginTop="40px"
+            android:layout_marginBottom="40px"/>
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSchedulers"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:timePickerMode="spinner" />
-
-    <Button
-        android:id="@+id/buttonSetTimer"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:orientation="vertical"
+        android:padding="16dp" >
+    </androidx.recyclerview.widget.RecyclerView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddScheduler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Thêm hẹn giờ"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp" />
-
-</LinearLayout>
+        android:layout_gravity="center|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_add"
+        android:contentDescription="Add Scheduler" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100px"/>
+</LinearLayout >

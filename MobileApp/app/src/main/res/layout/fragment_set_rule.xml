@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="120px"
                 android:entries="@array/condition_types"
-                android:gravity="left" />
+                android:gravity="left"/>
 
             <Spinner
                 android:id="@+id/comparison"
@@ -102,13 +102,14 @@
 
             <Button
                 android:id="@+id/buttonAddSetting"
-                android:layout_width="wrap_content"
+                android:layout_width="55dp"
                 android:layout_height="120px"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="4dp"
+                android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
+                android:layout_marginRight="5px"
                 android:text="Thêm"
-                android:textSize="17px" />
+                android:textSize="20px" />
         </LinearLayout>
     </LinearLayout>
 
@@ -120,39 +121,14 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="70px"
+            android:layout_height="80px"
             android:gravity="center"
             android:text="Danh sách công việc"
             android:textColor="#000000"
+            android:layout_marginTop="20px"
             android:textSize="20dp"
             android:textStyle="bold"></TextView>
 
-<!--        <LinearLayout-->
-<!--            android:id="@+id/task"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="120px"-->
-<!--            android:orientation="horizontal">-->
-
-<!--            <TextView-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_marginLeft="20px"-->
-<!--                android:layout_weight="9"-->
-<!--                android:gravity="center|left"-->
-<!--                android:text="Khi nhiệt độ > 30°C => bật thiết bị 1"-->
-<!--                android:textColor="#000000"-->
-<!--                android:textSize="14dp"></TextView>-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="25dp"-->
-<!--                android:layout_marginRight="20px"-->
-<!--                android:layout_weight="1"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:src="@drawable/ic_trash">-->
-
-<!--            </ImageView>-->
-<!--        </LinearLayout>-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewTasks"
             android:layout_width="match_parent"
@@ -161,5 +137,7 @@
             android:orientation="vertical">
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100px"/>
 </LinearLayout>

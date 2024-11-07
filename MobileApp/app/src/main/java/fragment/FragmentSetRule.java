@@ -43,12 +43,12 @@ public class FragmentSetRule extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private Spinner condition_type, comparison, turnType, deviceType;
-    private EditText editTextValue;
-    private Button buttonAddSetting;
-    private RecyclerView recyclerViewTasks;
-    private TaskAdapter taskAdapter;
-    private ArrayList<Task> taskList;
+    public Spinner condition_type, comparison, turnType, deviceType;
+    public EditText editTextValue;
+    public Button buttonAddSetting;
+    public RecyclerView recyclerViewTasks;
+    public TaskAdapter taskAdapter;
+    public ArrayList<Task> taskList;
 
     public FragmentSetRule() {
         // Required empty public constructor
