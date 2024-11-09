@@ -5,9 +5,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +20,19 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import do_an.tkll.an_iot_app.secretKey;
 
 import com.github.angads25.toggle.widget.LabeledSwitch;
 
 import java.util.ArrayList;
 
 import adapter.TaskAdapter;
+import do_an.tkll.an_iot_app.ConditionRule;
 import do_an.tkll.an_iot_app.MQTTHelper;
 import do_an.tkll.an_iot_app.R;
 import do_an.tkll.an_iot_app.Task;
+import do_an.tkll.an_iot_app.ConditionRuleViewModel;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +54,8 @@ public class FragmentSetRule extends Fragment {
     public RecyclerView recyclerViewTasks;
     public TaskAdapter taskAdapter;
     public ArrayList<Task> taskList;
+    private ConditionRuleViewModel ruleViewModel;
+    private ArrayList<ConditionRule> ruleList;
 
     public FragmentSetRule() {
         // Required empty public constructor
@@ -98,9 +105,11 @@ public class FragmentSetRule extends Fragment {
         editTextValue = view.findViewById(R.id.Value);
         buttonAddSetting = view.findViewById(R.id.buttonAddSetting);
         recyclerViewTasks = view.findViewById(R.id.recyclerViewTasks);
+        ruleViewModel = new ViewModelProvider(requireActivity()).get(ConditionRuleViewModel.class);
+        ruleList = ruleViewModel.getRuleList();
 
         taskList = new ArrayList<>();
-        taskAdapter = new TaskAdapter(getContext(), taskList);
+        taskAdapter = new TaskAdapter(getContext(), taskList, ruleViewModel);
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewTasks.setAdapter(taskAdapter);
 
@@ -199,16 +208,31 @@ public class FragmentSetRule extends Fragment {
     }
     private void addTask() {
         // Lấy dữ liệu từ các Spinner và EditText
-        String condition = condition_type.getSelectedItem().toString();
-        String compare = comparison.getSelectedItem().toString();
-        String value = editTextValue.getText().toString();
-        String action = turnType.getSelectedItem().toString();
-        String device = deviceType.getSelectedItem().toString();
+        String condition = condition_type.getSelectedItem().toString(); //sensorType (Nhiet do, Do sang, Do am)
+        String compare = comparison.getSelectedItem().toString();       //comparisonType (<, =, >)
+        String value = editTextValue.getText().toString();              //threshold (30 do C, 109 lux, 40%) String
+        String action = turnType.getSelectedItem().toString();          //operation (Bat/Tat)
+        String device = deviceType.getSelectedItem().toString();        //device (Thiet bi 1/2)
 
+        float threshold = Float.parseFloat(value);                      //threshold (30 do C, 109 lux, 40%) Float
+        String btn = "NULL";
+        switch (device){
+            case "Thiết bị 1":
+                btn = secretKey.MQTTbtn1;
+                break;
+            case "Thiết bị 2":
+                btn = secretKey.MQTTbtn2;
+                break;
+            default: break;
+        }
+        String operation = action.equals("Bật") ? "on" : "off";
         // Tạo và thêm công việc mới vào danh sách
         Task newTask = new Task(condition, compare, value, action, device);
         taskList.add(newTask);
         taskAdapter.notifyItemInserted(taskList.size() - 1);
+
+        ConditionRule rule = new ConditionRule(condition, btn, operation, threshold, compare);
+        ruleViewModel.addRule(rule);
     }
 }
 

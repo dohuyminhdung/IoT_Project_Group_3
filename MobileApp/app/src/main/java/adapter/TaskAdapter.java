@@ -10,17 +10,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
+import do_an.tkll.an_iot_app.ConditionRuleViewModel;
 import do_an.tkll.an_iot_app.R;
 import do_an.tkll.an_iot_app.Task;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     private ArrayList<Task> taskList;
+    private ConditionRuleViewModel ruleViewModel; // Tham chiếu đến ViewModel
     private Context context;
 
-    public TaskAdapter(Context context, ArrayList<Task> taskList) {
+    public TaskAdapter(Context context, ArrayList<Task> taskList, ConditionRuleViewModel ruleViewModel) {
         this.context = context;
         this.taskList = taskList;
+        this.ruleViewModel = ruleViewModel;
     }
 
     @NonNull
@@ -42,6 +45,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         // Xử lý sự kiện nhấn vào biểu tượng xóa
         holder.deleteIcon.setOnClickListener(v -> {
             taskList.remove(position);
+            ruleViewModel.removeRuleAt(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, taskList.size());
         });

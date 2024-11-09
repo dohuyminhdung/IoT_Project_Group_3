@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,10 +24,14 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
+import do_an.tkll.an_iot_app.ConditionRule;
 import do_an.tkll.an_iot_app.MQTTHelper;
 import do_an.tkll.an_iot_app.R;
 import do_an.tkll.an_iot_app.secretKey;
+import do_an.tkll.an_iot_app.ConditionRuleViewModel;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,11 +39,12 @@ import do_an.tkll.an_iot_app.secretKey;
  * create an instance of this fragment.
  */
 public class FragmentHome extends Fragment {
-
+    private ConditionRuleViewModel ruleViewModel;
     MQTTHelper mqttHelper;
     TextView txtTemp, txtLight, txtHumi;
     LabeledSwitch btn1, btn2;
     ImageView settingImage;
+    private ArrayList<ConditionRule> ruleList;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -95,6 +101,9 @@ public class FragmentHome extends Fragment {
         btn1 = view.findViewById(R.id.switch1);
         btn2 = view.findViewById(R.id.switch2);
 //        settingImage = view.findViewById(R.id.Setting);
+        ruleViewModel = new ViewModelProvider(requireActivity()).get(ConditionRuleViewModel.class);
+        ruleList = ruleViewModel.getRuleList();
+
         btn1.setOnToggledListener(new OnToggledListener() {
             @Override
             public void onSwitched(ToggleableView toggleableView, boolean isOn) {
@@ -160,14 +169,18 @@ public class FragmentHome extends Fragment {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 Log.d("TEST", topic + "***" + message.toString());
+                float sensorValue = Float.parseFloat(message.toString());
                 if(topic.contains("cambien1")){
                     txtTemp.setText(message.toString() + "°C");
+                    checkRules("Nhiệt Độ", sensorValue);
                 }
                 else if(topic.contains("cambien2")){
                     txtLight.setText(message.toString() + " lux");
+                    checkRules("Độ Sáng", sensorValue);
                 }
                 else if(topic.contains("cambien3")){
                     txtHumi.setText(message.toString() + "%");
+                    checkRules("Độ Ẩm", sensorValue);
                 }
                 else if(topic.contains("btn1")){
                     if(message.toString().equals("1")){
@@ -193,4 +206,41 @@ public class FragmentHome extends Fragment {
             }
         });
     }
+
+    private void checkRules(String sensorType, float sensorValue) {
+        for (ConditionRule rule : ruleList) { // `ruleList` là danh sách lưu các quy tắc
+            // Kiểm tra loại cảm biến và điều kiện ngưỡng
+            if (rule.sensorType.equals(sensorType)) {
+                boolean conditionMet = false;
+                // Kiểm tra loại điều kiện so sánh
+                switch (rule.comparisonType) {
+                    case ">":
+                        conditionMet = sensorValue > rule.threshold;
+                        break;
+                    case "=":
+                        conditionMet = sensorValue == rule.threshold;
+                        break;
+                    case "<":
+                        conditionMet = sensorValue < rule.threshold;
+                        break;
+                }
+
+                if (conditionMet) {
+                    try {
+                        // Nếu điều kiện thỏa mãn, bật/tắt thiết bị theo quy tắc
+                        if (rule.operation.equals("on")) {
+                            sendDataMQTT(rule.device, "1"); // Bật thiết bị
+                        } else {
+                            sendDataMQTT(rule.device, "0"); // Tắt thiết bị
+                        }
+                        Log.d("RuleCheck", "Rule satisfied: " + rule.sensorType + " " + rule.comparisonType + " " + rule.threshold);
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+
 }
