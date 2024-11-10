@@ -1,11 +1,15 @@
 package fragment;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +18,24 @@ import adapter.SchedulerAdapter;
 import do_an.tkll.an_iot_app.AddSchedulerActivity;
 import do_an.tkll.an_iot_app.R;
 import do_an.tkll.an_iot_app.Scheduler;
+import do_an.tkll.an_iot_app.SchedulerViewModel;
+import do_an.tkll.an_iot_app.secretKey;
 
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.lifecycle.Observer;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentScheduler#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.Calendar;
+
+
+
 public class FragmentScheduler extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -40,8 +49,10 @@ public class FragmentScheduler extends Fragment {
     private static final int REQUEST_CODE_ADD_SCHEDULER = 1;
     public RecyclerView recyclerViewSchedulers;
     public SchedulerAdapter schedulerAdapter;
-    public ArrayList<Scheduler> schedulerList;
     public FloatingActionButton fabAddScheduler;
+    private SchedulerViewModel schedulerViewModel;
+    public ArrayList<Scheduler> schedulerList;
+
     public FragmentScheduler() {
         // Required empty public constructor
     }
@@ -87,11 +98,18 @@ public class FragmentScheduler extends Fragment {
         recyclerViewSchedulers = view.findViewById(R.id.recyclerViewSchedulers);
         fabAddScheduler = view.findViewById(R.id.fabAddScheduler);
 
-        schedulerList = new ArrayList<>(); // Lưu trữ danh sách hẹn giờ
-        schedulerAdapter = new SchedulerAdapter(getContext(), schedulerList);
+        // Khởi tạo ViewModel
+        schedulerViewModel = new ViewModelProvider(requireActivity()).get(SchedulerViewModel.class);
+        schedulerList = schedulerViewModel.getSchedulerTasks();
+//        schedulerViewModel.getSchedulerTasks().observe(getViewLifecycleOwner(), updatedTasks -> {
+//            schedulerList = new ArrayList<>(updatedTasks);  // Cập nhật taskList khi dữ liệu thay đổi
+//        });
+        schedulerAdapter = new SchedulerAdapter(getContext(), schedulerList, schedulerViewModel);
         recyclerViewSchedulers.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewSchedulers.setAdapter(schedulerAdapter);
 
+
+        //Not changed yet
         fabAddScheduler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,13 +128,23 @@ public class FragmentScheduler extends Fragment {
             String deviceName = data.getStringExtra("deviceName");
             String onOff = data.getStringExtra("onOff");
             String time = data.getStringExtra("time");
-
-
             // Tạo một đối tượng Scheduler mới và thêm vào danh sách
             String description = onOff + " " + deviceName + " vào lúc " + time;
-            Scheduler newScheduler = new Scheduler(deviceName, time, description, onOff);
-            schedulerList.add(newScheduler);
+            String btn = "NULL";
+            switch (deviceName){
+                case "Thiết bị 1":
+                    btn = secretKey.MQTTbtn1;
+                    break;
+                case "Thiết bị 2":
+                    btn = secretKey.MQTTbtn2;
+                    break;
+                default: break;
+            }
+            String operation = onOff.equals("Bật") ? "on" : "off";
+            Scheduler newScheduler = new Scheduler(btn, time, description, operation);
+            schedulerViewModel.addSchedulerTask(newScheduler);
             schedulerAdapter.notifyItemInserted(schedulerList.size() - 1);
         }
     }
+
 }

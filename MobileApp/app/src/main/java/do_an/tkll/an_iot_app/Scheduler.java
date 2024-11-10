@@ -1,10 +1,10 @@
 package do_an.tkll.an_iot_app;
 
 public class Scheduler {
-    private String deviceName;
-    private String time;
-    private String description;
-    private String onOff;
+    public  String deviceName;
+    public  String time;
+    public  String description;
+    public  String onOff;
 
     public Scheduler(String deviceName, String time, String description, String onOff) {
         this.deviceName = deviceName;

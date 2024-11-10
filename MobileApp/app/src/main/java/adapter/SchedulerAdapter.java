@@ -11,14 +11,20 @@ import java.util.ArrayList;
 
 import do_an.tkll.an_iot_app.R;
 import do_an.tkll.an_iot_app.Scheduler;
+import do_an.tkll.an_iot_app.SchedulerViewModel;
+import fragment.FragmentScheduler;
 
 public class SchedulerAdapter extends RecyclerView.Adapter<SchedulerAdapter.SchedulerViewHolder> {
     private ArrayList<Scheduler> schedulerList;
+//    private FragmentScheduler fragmentScheduler;
+    private SchedulerViewModel schedulerViewModel;
     private Context context;
-    public SchedulerAdapter(Context context, ArrayList<Scheduler> schedulerList) {
+    public SchedulerAdapter(Context context, ArrayList<Scheduler> schedulerList, SchedulerViewModel schedulerViewModel) {
         this.context = context;
         this.schedulerList = schedulerList;
+        this.schedulerViewModel = schedulerViewModel;
     }
+
     @NonNull
     @Override
     public SchedulerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -37,7 +43,7 @@ public class SchedulerAdapter extends RecyclerView.Adapter<SchedulerAdapter.Sche
 
         // Sự kiện xóa
         holder.iconDelete.setOnClickListener(v -> {
-            schedulerList.remove(position);
+            schedulerViewModel.removeSchedulerTask(scheduler);  // Cập nhật ViewModel
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, schedulerList.size());
         });

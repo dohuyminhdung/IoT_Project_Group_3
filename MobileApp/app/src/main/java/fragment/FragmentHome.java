@@ -5,8 +5,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Looper;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +27,15 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import do_an.tkll.an_iot_app.ConditionRule;
 import do_an.tkll.an_iot_app.MQTTHelper;
 import do_an.tkll.an_iot_app.R;
+import do_an.tkll.an_iot_app.Scheduler;
+import do_an.tkll.an_iot_app.SchedulerViewModel;
 import do_an.tkll.an_iot_app.secretKey;
 import do_an.tkll.an_iot_app.ConditionRuleViewModel;
 
@@ -39,12 +46,18 @@ import do_an.tkll.an_iot_app.ConditionRuleViewModel;
  * create an instance of this fragment.
  */
 public class FragmentHome extends Fragment {
-    private ConditionRuleViewModel ruleViewModel;
     MQTTHelper mqttHelper;
     TextView txtTemp, txtLight, txtHumi;
     LabeledSwitch btn1, btn2;
-    ImageView settingImage;
+
+    private ConditionRuleViewModel ruleViewModel;
     private ArrayList<ConditionRule> ruleList;
+
+    private SchedulerViewModel schedulerViewModel;
+    private ArrayList<Scheduler> taskList;
+    private Handler handler = new Handler();
+    private Runnable checkSchedulerRunnable;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -100,9 +113,18 @@ public class FragmentHome extends Fragment {
         txtHumi = view.findViewById(R.id.txtHumidity);
         btn1 = view.findViewById(R.id.switch1);
         btn2 = view.findViewById(R.id.switch2);
-//        settingImage = view.findViewById(R.id.Setting);
+
         ruleViewModel = new ViewModelProvider(requireActivity()).get(ConditionRuleViewModel.class);
         ruleList = ruleViewModel.getRuleList();
+
+        schedulerViewModel = new ViewModelProvider(requireActivity()).get(SchedulerViewModel.class);
+        taskList = schedulerViewModel.getSchedulerTasks();
+//        schedulerViewModel.getSchedulerTasks().observe(getViewLifecycleOwner(), updatedTasks -> {
+//            taskList = new ArrayList<>(updatedTasks);  // Cập nhật taskList khi dữ liệu thay đổi
+//        });
+        startSchedulerCheck();
+
+
 
         btn1.setOnToggledListener(new OnToggledListener() {
             @Override
@@ -237,6 +259,33 @@ public class FragmentHome extends Fragment {
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
+                }
+            }
+        }
+    }
+
+    private void startSchedulerCheck() {
+        checkSchedulerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                checkSchedulerTasks();
+                handler.postDelayed(this, 60000); // Kiểm tra mỗi phút
+            }
+        };
+        handler.post(checkSchedulerRunnable);
+    }
+
+    private void checkSchedulerTasks() {
+        Calendar currentCalendar = Calendar.getInstance();
+        String currentTime = new SimpleDateFormat("HH:mm").format(currentCalendar.getTime());
+
+        for (Scheduler task : taskList) {
+            if (task.getTime().equals(currentTime)) {
+                try {
+                    sendDataMQTT(task.getDeviceName(), task.getOnOff().equals("on") ? "1" : "0");
+                    Log.d("SchedulerCheck", "Task executed for " + task.getDeviceName() + " with action: " + task.getOnOff());
+                } catch (MqttException e) {
+                    e.printStackTrace();
                 }
             }
         }

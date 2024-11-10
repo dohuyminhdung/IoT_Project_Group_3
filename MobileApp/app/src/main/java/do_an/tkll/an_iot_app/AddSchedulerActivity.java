@@ -49,12 +49,33 @@ public class AddSchedulerActivity extends AppCompatActivity {
             }
         }
 
-        buttonSetTimer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String deviceName = spinnerDevice.getSelectedItem().toString();
-                String onOff = SchTurnType.getSelectedItem().toString();
-                int hour, minute;
+//        buttonSetTimer.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String deviceName = spinnerDevice.getSelectedItem().toString();
+//                String onOff = SchTurnType.getSelectedItem().toString();
+//                int hour, minute;
+//                if (Build.VERSION.SDK_INT >= 23) {
+//                    hour = timePicker.getHour();
+//                    minute = timePicker.getMinute();
+//                } else {
+//                    hour = timePicker.getCurrentHour();
+//                    minute = timePicker.getCurrentMinute();
+//                }
+//                String time = String.format("%02d:%02d", hour, minute);
+//                // Truyền dữ liệu về Activity trước đó
+//                Intent resultIntent = new Intent();
+//                resultIntent.putExtra("deviceName", deviceName);
+//                resultIntent.putExtra("onOff", onOff);
+//                resultIntent.putExtra("time", time);
+//                setResult(RESULT_OK, resultIntent);
+//                finish();
+//            }
+//        });
+        buttonSetTimer.setOnClickListener(view -> {
+            String deviceName = spinnerDevice.getSelectedItem().toString();
+            String onOff = SchTurnType.getSelectedItem().toString();
+            int hour, minute;
                 if (Build.VERSION.SDK_INT >= 23) {
                     hour = timePicker.getHour();
                     minute = timePicker.getMinute();
@@ -62,16 +83,16 @@ public class AddSchedulerActivity extends AppCompatActivity {
                     hour = timePicker.getCurrentHour();
                     minute = timePicker.getCurrentMinute();
                 }
-                String time = String.format("%02d:%02d", hour, minute);
-                // Truyền dữ liệu về Activity trước đó
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("deviceName", deviceName);
-                resultIntent.putExtra("onOff", onOff);
-                resultIntent.putExtra("time", time);
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
+            String time = String.format("%02d:%02d", hour, minute);
+
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("deviceName", deviceName);
+            resultIntent.putExtra("onOff", onOff);
+            resultIntent.putExtra("time", time);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
+
         ArrayAdapter<String> adapterDevice = new ArrayAdapter<>(
                 this,
                 R.layout.spinner_selected_item, // Layout cho mục đã chọn

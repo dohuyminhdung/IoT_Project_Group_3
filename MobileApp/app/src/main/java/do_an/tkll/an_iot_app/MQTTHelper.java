@@ -14,6 +14,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.nio.charset.Charset;
+
 
 public class MQTTHelper {
     public MqttAndroidClient mqttAndroidClient;
@@ -115,5 +117,4 @@ public class MQTTHelper {
             }
         }
     }
-
 }
