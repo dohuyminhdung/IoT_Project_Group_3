@@ -16,6 +16,7 @@
     <string-array name="device_types">
         <item>Thiết bị 1</item>
         <item>Thiết bị 2</item>
+        <item>Thiết bị 3</item>
     </string-array>
     <string-array name="turn_types">
         <item>Bật</item>

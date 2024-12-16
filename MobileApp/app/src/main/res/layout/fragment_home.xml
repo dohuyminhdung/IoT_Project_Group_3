@@ -47,20 +47,23 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2">
-
-        <!--LineChart-->
-        <!--com.github.mikephil.charting.charts.LineChart-->
-        <!--android:id="@+id/templineChart"-->
+<!--        Line chart -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:layout_margin="4dp"
+            android:layout_weight="20">
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/tempChart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rounded_background"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="10"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -106,20 +109,26 @@
         android:layout_weight="2"
         android:orientation="horizontal">
 
-        <!--LineChart-->
-        <!--com.github.mikephil.charting.charts.LineChart-->
-        <!--android:id="@+id/lumilineChart"-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="20"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="4dp"
+            android:orientation="vertical">
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lightChart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rounded_background"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:orientation="vertical"></LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="10"
             android:orientation="horizontal">
             <ImageView
                 android:layout_width="300px"
@@ -137,19 +146,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Độ Sáng"
-                    android:textSize="12dp"
+                    android:textSize="10dp"
                     android:textStyle="bold"
-                    android:textColor="#FFEC44"
+                    android:textColor="#FFD000"
                     android:gravity="center"
                     android:layout_weight="1"/>
                 <TextView
                     android:id="@+id/txtLightning"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="109"
-                    android:textSize="24dp"
+                    android:text="50%"
+                    android:textSize="22dp"
                     android:textStyle="bold"
-                    android:textColor="#FFEC44"
+                    android:textColor="#FFD000"
                     android:gravity="center_horizontal"
                     android:layout_weight="1"/>
             </LinearLayout>
@@ -160,20 +169,24 @@
         android:layout_height="0dp"
         android:layout_weight="2">
 
-        <!--LineChart-->
-        <!--com.github.mikephil.charting.charts.LineChart-->
-        <!--android:id="@+id/humiChart"-->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="20"
+            android:layout_margin="4dp"
             android:orientation="vertical">
+             LineChart to display humidity
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/humiChart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rounded_background"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="10"
             android:orientation="horizontal">
 
             <ImageView
@@ -185,7 +198,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
                 <TextView
@@ -203,7 +216,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="40%"
-                    android:textSize="24dp"
+                    android:textSize="22dp"
                     android:textStyle="bold"
                     android:textColor="#4CB5F5"
                     android:gravity="center_horizontal"
@@ -241,9 +254,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1">
-
                 <com.github.angads25.toggle.widget.LabeledSwitch
                     android:id="@+id/switch2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:textSize="14sp"
+                    app:on="false"
+                    app:colorBorder="@color/colorAccent"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+                <com.github.angads25.toggle.widget.LabeledSwitch
+                    android:id="@+id/switch3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
@@ -264,5 +289,5 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100px"/>
+        android:layout_height="120px"/>
 </LinearLayout>

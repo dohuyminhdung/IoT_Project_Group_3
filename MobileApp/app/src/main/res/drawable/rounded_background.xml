@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    <solid android:color="#FFFFFF"/> &lt;!&ndash; Màu nền của LinearLayout &ndash;&gt;-->
+<!--    <corners android:radius="6dp"/> &lt;!&ndash; Độ bo tròn của các góc &ndash;&gt;-->
+<!--    <stroke android:width="1dp" android:color="#DDDDDD"/>&lt;!&ndash; Cài đặt viền &ndash;&gt;-->
+<!--</shape>-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Màu nền -->
+    <solid android:color="#FFFFFF" />
+    <!-- Độ bo tròn -->
+    <corners android:radius="12dp" />
+    <!-- Viền -->
+    <stroke
+        android:width="1dp"
+        android:color="#010101" />
+    <!-- Đổ bóng (chỉ hoạt động trên API >= 21) -->
+    <padding
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp" />
+</shape>

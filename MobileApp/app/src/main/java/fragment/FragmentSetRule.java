@@ -1,5 +1,7 @@
 package fragment;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -56,6 +58,11 @@ public class FragmentSetRule extends Fragment {
     public ArrayList<Task> taskList;
     private ConditionRuleViewModel ruleViewModel;
     private ArrayList<ConditionRule> ruleList;
+
+    private boolean condition_type_init = false;
+    private boolean comparison_init = false;
+    private boolean turnType_init = false;
+    private boolean deviceType_init = false;
 
     public FragmentSetRule() {
         // Required empty public constructor
@@ -118,8 +125,13 @@ public class FragmentSetRule extends Fragment {
         condition_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                String item = adapterView.getItemAtPosition(position).toString();
-                Toast.makeText(getContext(), "Đã chọn " + item, Toast.LENGTH_SHORT).show();
+                if(condition_type_init){
+                    String item = adapterView.getItemAtPosition(position).toString();
+                    Toast.makeText(getContext(), "Đã chọn " + item, Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    condition_type_init = true;
+                }
             }
 
             @Override
@@ -133,16 +145,32 @@ public class FragmentSetRule extends Fragment {
         condition.add("Độ Sáng");
         condition.add("Độ Ẩm");
 
-        ArrayAdapter<String> condition_adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, condition);
-        condition_adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
+        ArrayAdapter<String> condition_adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, condition);////////////////////////////////////////////////////////////////////////////////////////////////////
+        condition_adapter.setDropDownViewResource(R.layout.select_dialog_item);
         condition_type.setAdapter(condition_adapter);
 
 
         comparison.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                String item = adapterView.getItemAtPosition(position).toString();
-                Toast.makeText(getContext(), "Đã chọn " + item, Toast.LENGTH_SHORT).show();
+                if(comparison_init){
+                    String item = adapterView.getItemAtPosition(position).toString();
+                    switch (item){
+                        case ">":
+                            Toast.makeText(getContext(), "Đã chọn so sánh lớn hơn " + item, Toast.LENGTH_SHORT).show();
+                            break;
+                        case "<":
+                            Toast.makeText(getContext(), "Đã chọn so sánh nhỏ hơn " + item, Toast.LENGTH_SHORT).show();
+                            break;
+                        case "=":
+                            Toast.makeText(getContext(), "Đã chọn so sánh bằng nhau " + item, Toast.LENGTH_SHORT).show();
+                            break;
+                        default: break;
+                    }
+                }
+                else{
+                    comparison_init = true;
+                }
             }
 
             @Override
@@ -156,8 +184,8 @@ public class FragmentSetRule extends Fragment {
         compare.add("<");
         compare.add("=");
 
-        ArrayAdapter<String> compare_adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, compare);
-        compare_adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
+        ArrayAdapter<String> compare_adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, compare);
+        compare_adapter.setDropDownViewResource(R.layout.select_dialog_item);
         comparison.setAdapter(compare_adapter);
 
 
@@ -165,8 +193,13 @@ public class FragmentSetRule extends Fragment {
         turnType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                String item = adapterView.getItemAtPosition(position).toString();
-                Toast.makeText(getContext(), "Đã chọn " + item, Toast.LENGTH_SHORT).show();
+                if(turnType_init){
+                    String item = adapterView.getItemAtPosition(position).toString();
+                    Toast.makeText(getContext(), "Đã chọn " + item, Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    turnType_init = true;
+                }
             }
 
             @Override
@@ -179,8 +212,8 @@ public class FragmentSetRule extends Fragment {
         turn.add("Bật");
         turn.add("Tắt");
 
-        ArrayAdapter<String> turn_adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, turn);
-        turn_adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
+        ArrayAdapter<String> turn_adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, turn);
+        turn_adapter.setDropDownViewResource(R.layout.select_dialog_item);
         turnType.setAdapter(turn_adapter);
 
 
@@ -188,8 +221,13 @@ public class FragmentSetRule extends Fragment {
         deviceType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                String item = adapterView.getItemAtPosition(position).toString();
-                Toast.makeText(getContext(), "Đã chọn " + item, Toast.LENGTH_SHORT).show();
+                if(deviceType_init){
+                    String item = adapterView.getItemAtPosition(position).toString();
+                    Toast.makeText(getContext(), "Đã chọn " + item, Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    deviceType_init = true;
+                }
             }
 
             @Override
@@ -201,9 +239,10 @@ public class FragmentSetRule extends Fragment {
         ArrayList<String> device = new ArrayList<String>();
         device.add("Thiết bị 1");
         device.add("Thiết bị 2");
+        device.add("Thiết bị 3");
 
-        ArrayAdapter<String> device_adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, device);
-        device_adapter.setDropDownViewResource(android.R.layout.select_dialog_item);
+        ArrayAdapter<String> device_adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, device);
+        device_adapter.setDropDownViewResource(R.layout.select_dialog_item);
         deviceType.setAdapter(device_adapter);
     }
     private void addTask() {
@@ -212,9 +251,58 @@ public class FragmentSetRule extends Fragment {
         String compare = comparison.getSelectedItem().toString();       //comparisonType (<, =, >)
         String value = editTextValue.getText().toString();              //threshold (30 do C, 109 lux, 40%) String
         String action = turnType.getSelectedItem().toString();          //operation (Bat/Tat)
-        String device = deviceType.getSelectedItem().toString();        //device (Thiet bi 1/2)
+        String device = deviceType.getSelectedItem().toString();        //device (Thiet bi 1/2/3)
 
-        float threshold = Float.parseFloat(value);                      //threshold (30 do C, 109 lux, 40%) Float
+        // Kiểm tra nếu `editTextValue` rỗng
+        if(value.isEmpty()){
+            Toast.makeText(getContext(), "Bạn chưa nhập giá trị ngưỡng!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Kiểm tra xem task mới có xung đột với task đã tồn tại không
+        for (Task task : taskList) {
+            if (task.getDevice().equals(device) &&
+                    task.getCondition().equals(condition) &&
+                    task.getValue().equals(value)){
+                if(task.getComparison().equals(compare)){
+                    if(!task.getAction().equals(action)){
+                        Toast.makeText(getContext(), "Xung đột với tác vụ đã tồn tại!", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(getContext(), "Tác vụ đã tồn tại!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    if(task.getAction().equals(action)){
+                        Toast.makeText(getContext(), "Xung đột với tác vụ đã tồn tại!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return;
+            }
+        }
+
+
+        editTextValue.setTextColor(Color.BLACK);
+        editTextValue.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                // Ẩn bàn phím
+                android.view.inputmethod.InputMethodManager imm =
+                        (android.view.inputmethod.InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        });
+
+        float threshold; //= Float.parseFloat(value);                      //threshold (30 do C, 109 lux, 40%) Float
+        try {
+            threshold = Float.parseFloat(value);
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Giá trị ngưỡng không hợp lệ!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if( 0.0 > threshold || threshold > 100){
+            Toast.makeText(getContext(), "Giá trị ngưỡng không hợp lệ!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String btn = "NULL";
         switch (device){
             case "Thiết bị 1":
@@ -222,6 +310,9 @@ public class FragmentSetRule extends Fragment {
                 break;
             case "Thiết bị 2":
                 btn = secretKey.MQTTbtn2;
+                break;
+            case "Thiết bị 3":
+                btn = secretKey.MQTTbtn3;
                 break;
             default: break;
         }
@@ -233,6 +324,7 @@ public class FragmentSetRule extends Fragment {
 
         ConditionRule rule = new ConditionRule(condition, btn, operation, threshold, compare);
         ruleViewModel.addRule(rule);
+        Toast.makeText(getContext(), "Thêm tác vụ thành công!", Toast.LENGTH_SHORT).show();
     }
 }
 

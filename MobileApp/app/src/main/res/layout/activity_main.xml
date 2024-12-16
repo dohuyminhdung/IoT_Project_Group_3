@@ -19,7 +19,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="5dp"
-        app:cardCornerRadius="20dp">
+        app:cardCornerRadius="20dp"
+        android:elevation="0dp">
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNav"
             android:layout_width="match_parent"

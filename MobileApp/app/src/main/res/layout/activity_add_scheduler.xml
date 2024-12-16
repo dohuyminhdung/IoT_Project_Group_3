@@ -44,7 +44,8 @@
         android:id="@+id/timePicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:timePickerMode="spinner"/>
+        android:timePickerMode="spinner"
+        android:theme="@style/CustomTimePicker"/>
 
     <Button
         android:id="@+id/buttonSetTimer"

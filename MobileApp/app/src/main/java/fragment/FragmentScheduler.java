@@ -22,6 +22,7 @@ import do_an.tkll.an_iot_app.SchedulerViewModel;
 import do_an.tkll.an_iot_app.secretKey;
 
 import android.content.Intent;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
@@ -128,8 +129,8 @@ public class FragmentScheduler extends Fragment {
             String deviceName = data.getStringExtra("deviceName");
             String onOff = data.getStringExtra("onOff");
             String time = data.getStringExtra("time");
+
             // Tạo một đối tượng Scheduler mới và thêm vào danh sách
-            String description = onOff + " " + deviceName + " vào lúc " + time;
             String btn = "NULL";
             switch (deviceName){
                 case "Thiết bị 1":
@@ -138,12 +139,33 @@ public class FragmentScheduler extends Fragment {
                 case "Thiết bị 2":
                     btn = secretKey.MQTTbtn2;
                     break;
+                case "Thiết bị 3":
+                    btn = secretKey.MQTTbtn3;
+                    break;
                 default: break;
             }
+
             String operation = onOff.equals("Bật") ? "on" : "off";
+            // Kiểm tra xung đột trong danh sách hẹn giờ hiện tại
+            for (Scheduler scheduler : schedulerList) {
+                if (scheduler.getDeviceName().equals(btn) &&
+                        scheduler.getTime().equals(time)) {
+                    // Xung đột được phát hiện
+                    if(!scheduler.getOnOff().equals(operation)){
+                        Toast.makeText(getContext(), "Xung đột với hẹn giờ đã tồn tại!", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(getContext(), "Hẹn giờ đã tồn tại!", Toast.LENGTH_SHORT).show();
+                    }
+                    return;
+                }
+            }
+
+            String description = onOff + " " + deviceName + " vào lúc " + time;
             Scheduler newScheduler = new Scheduler(btn, time, description, operation);
             schedulerViewModel.addSchedulerTask(newScheduler);
             schedulerAdapter.notifyItemInserted(schedulerList.size() - 1);
+            Toast.makeText(getContext(), "Thêm hẹn giờ thành công!", Toast.LENGTH_SHORT).show();
         }
     }
 

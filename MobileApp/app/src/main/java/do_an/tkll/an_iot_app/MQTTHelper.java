@@ -24,7 +24,11 @@ public class MQTTHelper {
                                          secretKey.MQTTcambien2,
                                          secretKey.MQTTcambien3,
                                          secretKey.MQTTbtn1,
-                                         secretKey.MQTTbtn2};
+                                         secretKey.MQTTbtn2,
+                                         secretKey.MQTT_AI,
+                                         secretKey.MQTTbtn3,
+                                         secretKey.MQTTcambienchay,
+                                         secretKey.MQTTcambiengas};
 
     final String clientId = "white.Ren.Insania";
     final String username = secretKey.username;

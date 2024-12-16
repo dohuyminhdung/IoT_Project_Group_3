@@ -9,6 +9,7 @@
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/brightness_icon.xml" value="0.1984375" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/camera_icon.xml" value="0.15208333333333332" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/humidity_icon.xml" value="0.24010416666666667" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/ic_alert.xml" value="0.25052083333333336" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.1984375" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.15208333333333332" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/ic_baseline_restore_from_trash_24.xml" value="0.1984375" />
@@ -16,19 +17,26 @@
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/ic_logo.xml" value="0.13958333333333334" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/ic_trash.xml" value="0.13229166666666667" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/leftarrow_icon.xml" value="0.1984375" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/linechart_gradient.xml" value="0.15104166666666666" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/linechart_gradient_red.xml" value="0.14322916666666666" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/linechart_gradient_yellow.xml" value="0.14322916666666666" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/rounded_background.xml" value="0.2212962962962963" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/scheduler_icon.xml" value="0.1984375" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/settings_icon.xml" value="0.15208333333333332" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/drawable/temperature_icon.xml" value="0.1984375" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/activity_add_scheduler.xml" value="0.264" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/fragment_camera.xml" value="0.20108695652173914" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/fragment_home.xml" value="0.2" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/fragment_scheduler.xml" value="0.264" />
-        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/fragment_set_rule.xml" value="0.4" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/fragment_set_rule.xml" value="0.264" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/item_scheduler.xml" value="0.2" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/item_task.xml" value="0.2" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/select_dialog_item.xml" value="0.1331521739130435" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/set_control_rule.xml" value="0.3201581027667984" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/spinner_item.xml" value="0.19519927536231885" />
         <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/layout/spinner_selected_item.xml" value="0.1234375" />
-        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/menu/menu_bottom_nav.xml" value="0.4" />
+        <entry key="..\:/DoAnTKLL/MobileApp/app/src/main/res/menu/menu_bottom_nav.xml" value="0.264" />
       </map>
     </option>
   </component>

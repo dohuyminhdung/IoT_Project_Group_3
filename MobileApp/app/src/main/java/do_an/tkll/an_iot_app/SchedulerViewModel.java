@@ -8,14 +8,11 @@ import java.util.ArrayList;
 
 public class SchedulerViewModel extends ViewModel {
     private final ArrayList<Scheduler> schedulerTasks = new ArrayList<>();
-//    private final MutableLiveData<ArrayList<Scheduler>> schedulerTasks = new MutableLiveData<>(new ArrayList<>());
 
     public ArrayList<Scheduler> getSchedulerTasks() {
         return schedulerTasks;
     }
-//    public LiveData<ArrayList<Scheduler>> getSchedulerTasks() {
-//        return schedulerTasks;
-//    }
+
 
     public void addSchedulerTask(Scheduler task) {
         if (task != null) {
