@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachable Machine Audio Model</title>
+</head>
+<body>
+    <div>Teachable Machine Audio Model</div>
+    <div id="label-container"></div>
+
+    <!-- TensorFlow.js và Speech Commands -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.min.js"></script>
+
+    <script>
+        const URL = "https://teachablemachine.withgoogle.com/models/Ac7NHq8WQ/"; // Model URL
+        let socket;
+
+        // Kết nối WebSocket đến Python server
+        function connectWebSocket() {
+            socket = new WebSocket("ws://localhost:8000"); // Địa chỉ WebSocket server
+            socket.onopen = () => console.log("WebSocket connected to Python server");
+            socket.onerror = (error) => console.error("WebSocket error:", error);
+        }
+
+        async function createModel() {
+            const checkpointURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+
+            const recognizer = speechCommands.create(
+                "BROWSER_FFT", undefined, checkpointURL, metadataURL
+            );
+
+            await recognizer.ensureModelLoaded();
+            return recognizer;
+        }
+
+        async function init() {
+            connectWebSocket(); // Kết nối WebSocket
+
+            const recognizer = await createModel();
+            const classLabels = recognizer.wordLabels();
+            const labelContainer = document.getElementById("label-container");
+
+            for (let i = 0; i < classLabels.length; i++) {
+                labelContainer.appendChild(document.createElement("div"));
+            }
+
+            recognizer.listen(result => {
+                const scores = result.scores;
+                let predictions = {};
+                for (let i = 0; i < classLabels.length; i++) {
+                    predictions[classLabels[i]] = scores[i].toFixed(2);
+                    labelContainer.childNodes[i].innerHTML = classLabels[i] + ": " + scores[i].toFixed(2);
+                }
+
+                // Gửi kết quả đến Python server
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify(predictions));
+                }
+            }, {
+                probabilityThreshold: 0.75,
+                overlapFactor: 0.75
+            });
+        }
+
+        // Kiểm tra quyền microphone và khởi chạy
+        async function startOnLoad() {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true }); // Yêu cầu quyền sử dụng microphone
+                console.log("Microphone permission granted");
+                init(); // Sau khi được quyền, gọi init()
+            } catch (error) {
+                console.error("Microphone permission denied:", error);
+            }
+        }
+
+        // Tự động khởi chạy khi tải trang
+        window.onload = startOnLoad;
+    </script>
+</body>
+</html>

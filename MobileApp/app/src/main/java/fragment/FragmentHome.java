@@ -255,6 +255,8 @@ public class FragmentHome extends Fragment {
                     }
                     else{
                         sendDataMQTT(secretKey.MQTTbtn2, "0");
+                        sendDataMQTT(secretKey.MQTTcambienchay, "1");
+                        sendDataMQTT(secretKey.MQTTcambiengas, "1");
                     }
                 } catch (MqttException e){
                     e.printStackTrace();
@@ -379,7 +381,7 @@ public class FragmentHome extends Fragment {
                     }
                 }
                 else if(topic.contains("cambien-chay")) {
-                    if(message.toString().equals("1")){
+                    if(message.toString().equals("0")){
                         //make toast
                         Toast.makeText(getContext(), "Khu vực của bạn đang gặp nguy hiểm! Có cháy!", Toast.LENGTH_LONG).show();
                         //send notify
@@ -389,7 +391,7 @@ public class FragmentHome extends Fragment {
                     }
                 }
                 else if(topic.contains("cambien-gas")){
-                    if(message.toString().equals("1")){
+                    if(message.toString().equals("0")){
                         //make toast
                         Toast.makeText(getContext(), "Phát hiện có khí độc tại khu vực của bạn!", Toast.LENGTH_LONG).show();
                         //send notify
@@ -422,6 +424,7 @@ public class FragmentHome extends Fragment {
                     case "<":
                         conditionMet = sensorValue < rule.threshold;
                         break;
+                    default: break;
                 }
 
                 if (conditionMet) {
@@ -492,7 +495,7 @@ public class FragmentHome extends Fragment {
         notificationManager.notify(1, notificationBuilder.build());
     }
 
-//    private void playAlarm() {
+    //    private void playAlarm() {
 //        MediaPlayer mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alarm_sound);
 //        mediaPlayer.start();
 //    }

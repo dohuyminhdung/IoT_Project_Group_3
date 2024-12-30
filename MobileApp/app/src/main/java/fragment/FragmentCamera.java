@@ -3,6 +3,7 @@ package fragment;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -37,6 +38,11 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Collections;
@@ -50,6 +56,7 @@ public class FragmentCamera extends Fragment {
 
     private static final String TAG = "FragmentCamera";
     private static final int CAMERA_REQUEST_CODE = 100;
+    long lastFrameTime = 0;
 
     private LinearLayout cameraInfoLayout; // Thẻ LinearLayout để hiển thị thông tin
     private MQTTHelper mqttHelper;
@@ -58,6 +65,8 @@ public class FragmentCamera extends Fragment {
     private CameraDevice cameraDevice;
     private CameraCaptureSession cameraCaptureSession;
 
+    private Socket socket;
+    private OutputStream outputStream;
 
     public FragmentCamera() {
         // Required empty public constructor
@@ -103,6 +112,7 @@ public class FragmentCamera extends Fragment {
         cameraInfoLayout = view.findViewById(R.id.cameraInfo);
 
         initMQTTInBackground();
+        connectToSocketServer(); // Kết nối tới máy chủ Python
 
         textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
@@ -111,8 +121,7 @@ public class FragmentCamera extends Fragment {
             }
 
             @Override
-            public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
-            }
+            public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {}
 
             @Override
             public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
@@ -122,9 +131,58 @@ public class FragmentCamera extends Fragment {
 
             @Override
             public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastFrameTime < 5000) return; // Gửi mỗi 5000ms
+                lastFrameTime = currentTime;
+
+                if (outputStream != null) {
+                    Bitmap bitmap = textureView.getBitmap();
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+                    byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+                    new Thread(() -> {
+                        try {
+                            if (socket.isClosed() || !socket.isConnected()) {
+                                Log.e(TAG, "Socket is closed. Reconnecting...");
+                                connectToSocketServer();
+                                return;
+                            }
+
+                            // Gửi kích thước dữ liệu trước
+                            outputStream.write(ByteBuffer.allocate(4).putInt(byteArray.length).array());
+                            outputStream.write(byteArray);
+                            outputStream.flush();
+                            Log.d(TAG, "Frame sent successfully.");
+                        } catch (IOException e) {
+                            Log.e(TAG, "Error sending frame: " + e.getMessage());
+                            connectToSocketServer(); // Thử kết nối lại nếu gặp lỗi
+                        }
+                    }).start();
+                }
             }
         });
     }
+
+    private void connectToSocketServer() {
+        new Thread(() -> {
+            while (socket == null || outputStream == null) {
+                try {
+                    Log.d(TAG, "Attempting to connect to socket server...");
+                    socket = new Socket("10.130.77.182", 8000); // Địa chỉ IP Python server
+                    outputStream = socket.getOutputStream();
+                    Log.d(TAG, "Connected to socket server.");
+                } catch (IOException e) {
+                    Log.e(TAG, "Socket connection error: " + e.getMessage());
+                    try {
+                        Thread.sleep(1000); // Chờ trước khi thử lại
+                    } catch (InterruptedException ignored) {}
+                }
+            }
+        }).start();
+    }
+
+
 
     private void openCamera() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -294,6 +352,12 @@ public class FragmentCamera extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         closeCamera();
+        try {
+            if (socket != null) socket.close();
+            if (outputStream != null) outputStream.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Error closing socket: " + e.getMessage());
+        }
     }
 
 }

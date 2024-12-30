@@ -21,14 +21,14 @@ public class MQTTHelper {
     public MqttAndroidClient mqttAndroidClient;
 
     public final String[] arrayTopics = {secretKey.MQTTcambien1,
-                                         secretKey.MQTTcambien2,
-                                         secretKey.MQTTcambien3,
-                                         secretKey.MQTTbtn1,
-                                         secretKey.MQTTbtn2,
-                                         secretKey.MQTT_AI,
-                                         secretKey.MQTTbtn3,
-                                         secretKey.MQTTcambienchay,
-                                         secretKey.MQTTcambiengas};
+            secretKey.MQTTcambien2,
+            secretKey.MQTTcambien3,
+            secretKey.MQTTbtn1,
+            secretKey.MQTTbtn2,
+            secretKey.MQTT_AI,
+            secretKey.MQTTbtn3,
+            secretKey.MQTTcambienchay,
+            secretKey.MQTTcambiengas};
 
     final String clientId = "white.Ren.Insania";
     final String username = secretKey.username;
