@@ -1,6 +1,6 @@
 # My SmartHome App
 
-## 1. Requirement environment 📑
+## 1. Requirement environment
 - *Python*: 3.9
 - *pip*
 
