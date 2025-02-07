@@ -38,7 +38,7 @@ python main.py
 2. Create a virtual mobile device in Android Studio following the instructions at:
 [https://developer.android.com/studio/run/managing-avds](https://developer.android.com/studio/run/managing-avds)
 
-3. Open Project mobile app and create file `secretKey.java` to store your adafruit key for the project:
+3. Open Project MobileApp and create file `secretKey.java` to store your adafruit key for the project:
 
 ```console
 public class secretKey {
