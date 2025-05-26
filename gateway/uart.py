@@ -10,13 +10,15 @@ def getPort():
         if "USB Serial Device" in strPort:
             splitPort = strPort.split(" ")
             commPort = (splitPort[0])
-    return "COM9"
+    return "COM8"
 
 if getPort() != "None":
     ser = serial.Serial( port=getPort(), baudrate=9600)
     print(ser)
 
 def processData(client, data):
+    print(data)
+    # print("\n")
     data = data.replace("!", "")
     data = data.replace("#", "")
     splitData = data.split(":")
@@ -35,39 +37,40 @@ def processData(client, data):
         client.publish("btn2", splitData[2])
 mess = ""
 
-async def read_serial(client):
-    global mess
-    while True:
-        try:
-            # Lấy số byte sẵn sàng đọc
-            bytes_to_read = await asyncio.to_thread(lambda: ser.in_waiting)
-            if bytes_to_read > 0:
-                # Đọc dữ liệu từ serial trong một luồng riêng
-                data_chunk = await asyncio.to_thread(ser.read, bytes_to_read)
-                # Giải mã dữ liệu nhận được
-                mess += data_chunk.decode("UTF-8", errors="ignore")
-                print(f"Message buffer: {mess}")
+async def readSerial(client):
+    bytesToRead = ser.inWaiting()
+    if bytesToRead > 0:
+        global mess
+        mess = mess + ser.read(bytesToRead).decode("UTF-8", errors="ignore")
+        while ("#" in mess) and ("!" in mess):
+            start = mess.find("!")
+            end = mess.find("#")
+            await asyncio.to_thread(processData, client, mess[start:end + 1])
+            if end == len(mess):
+                mess = ""
+            else:
+                mess = mess[end+1:]
 
-                # Xử lý chuỗi chứa tin nhắn hoàn chỉnh
-                while "!" in mess and "#" in mess:
-                    start = mess.find("!")
-                    end = mess.find("#")
-                    complete_message = mess[start:end + 1]
-                    print(f"Processing message: {complete_message}")
-                    await asyncio.to_thread(processData, client, complete_message)
-                    mess = "" if end == len(mess) else mess[end + 1:]
-
-            await asyncio.sleep(0.1)  # Tránh đọc liên tục để giảm tải CPU
-        except Exception as e:
-            print(f"Error in read_serial: {e}")
-
-
+# MCU communicate directly with broker in both CoreIoT and Adafruit so this is no need anymore
+# def readSerial(client):
+#     bytesToRead = ser.inWaiting()
+#     if (bytesToRead > 0):
+#         global mess
+#         mess = mess + ser.read(bytesToRead).decode("UTF-8", errors="ignore")
+#         while ("#" in mess) and ("!" in mess):
+#             start = mess.find("!")
+#             end = mess.find("#")
+#             processData(client, mess[start:end + 1])
+#             if (end == len(mess)):
+#                 mess = ""
+#             else:
+#                 mess = mess[end+1:]
 
 
 def send_data(feed_id, data):
     last_char = feed_id[-1]  # Ký tự cuối cùng trong feed_id
     string= "!B:" + last_char + ":" + data + "#"
-    ser.write(str(string).encode("utf-8"))
+    ser.write(str(string).encode  ("utf-8"))
     print(string)
 
 # def send_data(string):
