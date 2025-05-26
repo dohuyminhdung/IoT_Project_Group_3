@@ -30,7 +30,6 @@ import java.util.ArrayList;
 
 import adapter.TaskAdapter;
 import do_an.tkll.an_iot_app.ConditionRule;
-import do_an.tkll.an_iot_app.MQTTHelper;
 import do_an.tkll.an_iot_app.R;
 import do_an.tkll.an_iot_app.Task;
 import do_an.tkll.an_iot_app.ConditionRuleViewModel;
@@ -306,13 +305,13 @@ public class FragmentSetRule extends Fragment {
         String btn = "NULL";
         switch (device){
             case "Thiết bị 1":
-                btn = secretKey.MQTTbtn1;
+                btn = "led"; //secretKey.MQTTbtn1;
                 break;
             case "Thiết bị 2":
-                btn = secretKey.MQTTbtn2;
+                btn = "fan"; //secretKey.MQTTbtn2;
                 break;
             case "Thiết bị 3":
-                btn = secretKey.MQTTbtn3;
+                btn = "servo"; //secretKey.MQTTbtn3;
                 break;
             default: break;
         }

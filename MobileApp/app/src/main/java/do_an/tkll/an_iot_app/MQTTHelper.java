@@ -19,7 +19,6 @@ import java.nio.charset.Charset;
 
 public class MQTTHelper {
     public MqttAndroidClient mqttAndroidClient;
-
     public final String[] arrayTopics = {secretKey.MQTTcambien1,
             secretKey.MQTTcambien2,
             secretKey.MQTTcambien3,

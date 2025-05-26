@@ -58,7 +58,7 @@ public class FragmentCamera extends Fragment {
     private static final int CAMERA_REQUEST_CODE = 100;
     long lastFrameTime = 0;
 
-    private LinearLayout cameraInfoLayout; // Thẻ LinearLayout để hiển thị thông tin
+    private LinearLayout cameraInfoLayout;
     private MQTTHelper mqttHelper;
 
     private TextureView textureView;
@@ -72,15 +72,7 @@ public class FragmentCamera extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentCamera.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static FragmentCamera newInstance(String param1, String param2) {
         FragmentCamera fragment = new FragmentCamera();
         Bundle args = new Bundle();
@@ -169,7 +161,7 @@ public class FragmentCamera extends Fragment {
             while (socket == null || outputStream == null) {
                 try {
                     Log.d(TAG, "Attempting to connect to socket server...");
-                    socket = new Socket("10.130.77.182", 8000); // Địa chỉ IP Python server
+                    socket = new Socket("192.168.1.85", 8000); // Địa chỉ IP Python server
                     outputStream = socket.getOutputStream();
                     Log.d(TAG, "Connected to socket server.");
                 } catch (IOException e) {
@@ -182,8 +174,6 @@ public class FragmentCamera extends Fragment {
         }).start();
     }
 
-
-
     private void openCamera() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
@@ -192,7 +182,13 @@ public class FragmentCamera extends Fragment {
 
         CameraManager cameraManager = (CameraManager) requireContext().getSystemService(Context.CAMERA_SERVICE);
         try {
-            String cameraId = cameraManager.getCameraIdList()[0]; // Sử dụng camera đầu tiên
+            String[] cameraIdList = cameraManager.getCameraIdList();
+            if (cameraIdList.length == 0) {
+                Log.e(TAG, "No camera available on this device.");
+                Toast.makeText(requireContext(), "Không tìm thấy camera.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String cameraId = cameraIdList[0]; // Sử dụng camera đầu tiên // Sử dụng camera đầu tiên
             cameraManager.openCamera(cameraId, new CameraDevice.StateCallback() {
                 @Override
                 public void onOpened(@NonNull CameraDevice camera) {
@@ -267,15 +263,14 @@ public class FragmentCamera extends Fragment {
 
     private void displayMessage(String message) {
 //        cameraInfoLayout.removeAllViews();
+        Log.d("Debug DISPLAY", "Attempting to display: " + message);
         String timestamp = getCurrentTimestamp();
         message = timestamp + " " + message;
-
         TextView textView = new TextView(requireContext());
         textView.setText(message);
         textView.setTextSize(12);
         textView.setTextColor(getResources().getColor(R.color.black));
         textView.setPadding(16, 16, 16, 10);
-
         requireActivity().runOnUiThread(() -> {
             cameraInfoLayout.addView(textView);
             cameraInfoLayout.post(() -> {
@@ -290,61 +285,44 @@ public class FragmentCamera extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mqttHelper == null) {
-            mqttHelper = new MQTTHelper(requireContext());
-            mqttHelper.setCallback(new MqttCallbackExtended() {
-                @Override
-                public void connectComplete(boolean reconnect, String serverURI) {
-                    Log.d(TAG, "Reconnected to MQTT server: " + serverURI);
-                }
-
-                @Override
-                public void connectionLost(Throwable cause) {
-                    Log.e(TAG, "MQTT connection lost: " + cause.getMessage());
-                }
-
-                @Override
-                public void messageArrived(String topic, MqttMessage message) throws Exception {
-                    if (topic.equals(secretKey.MQTT_AI)) {
-                        String receivedData = new String(message.getPayload());
-                        displayMessage(receivedData);
-                    }
-                }
-
-                @Override
-                public void deliveryComplete(IMqttDeliveryToken token) {
-                    Log.d(TAG, "MQTT delivery complete");
-                }
-            });
-        }
     }
 
     private void initMQTTInBackground() {
         new Thread(() -> {
-            mqttHelper = new MQTTHelper(requireContext());
-            mqttHelper.setCallback(new MqttCallbackExtended() {
-                @Override
-                public void connectComplete(boolean reconnect, String serverURI) {
-                    Log.d(TAG, "Connected to MQTT server in background: " + serverURI);
-                }
-
-                @Override
-                public void connectionLost(Throwable cause) {
-                    Log.e(TAG, "MQTT connection lost in background: " + cause.getMessage());
-                }
-
-                @Override
-                public void messageArrived(String topic, MqttMessage message) throws Exception {
-                    if (topic.equals(secretKey.MQTT_AI)) {
-                        displayMessage(new String(message.getPayload()));
+            if (mqttHelper == null) {
+                mqttHelper = new MQTTHelper(requireContext());
+                mqttHelper.setCallback(new MqttCallbackExtended() {
+                    @Override
+                    public void connectComplete(boolean reconnect, String serverURI) {
+                        Log.d(TAG, "Connected to MQTT server in background: " + serverURI);
+                        try {
+                            mqttHelper.mqttAndroidClient.subscribe(secretKey.MQTT_AI, 1);
+                            Log.d(TAG, "Subscribed to topic: " + secretKey.MQTT_AI);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Failed to subscribe: " + e.getMessage());
+                        }
                     }
-                }
 
-                @Override
-                public void deliveryComplete(IMqttDeliveryToken token) {
-                    Log.d(TAG, "MQTT delivery complete in background");
-                }
-            });
+                    @Override
+                    public void connectionLost(Throwable cause) {
+                        Log.e(TAG, "MQTT connection lost in background: " + cause.getMessage());
+                    }
+
+                    @Override
+                    public void messageArrived(String topic, MqttMessage message) throws Exception {
+                        Log.d("From Fragment Camera ", topic + "###############" + message.toString());
+                        if (topic.equals(secretKey.MQTT_AI)) {
+                            String receivedData = new String(message.getPayload());
+                            displayMessage(receivedData);
+                        }
+                    }
+
+                    @Override
+                    public void deliveryComplete(IMqttDeliveryToken token) {
+//                        Log.d(TAG, "MQTT delivery complete in background");
+                    }
+                });
+            }
         }).start();
     }
 

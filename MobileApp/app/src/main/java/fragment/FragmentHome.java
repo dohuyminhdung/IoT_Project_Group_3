@@ -37,6 +37,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.gson.JsonObject;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -55,17 +56,16 @@ import do_an.tkll.an_iot_app.MQTTHelper;
 import do_an.tkll.an_iot_app.R;
 import do_an.tkll.an_iot_app.Scheduler;
 import do_an.tkll.an_iot_app.SchedulerViewModel;
+import do_an.tkll.an_iot_app.ThingsBoardMQTTHelper;
 import do_an.tkll.an_iot_app.secretKey;
 import do_an.tkll.an_iot_app.ConditionRuleViewModel;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentHome#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentHome extends Fragment {
-    MQTTHelper mqttHelper;
+    MQTTHelper mqttHelper; //ADAFRUIT
+    ThingsBoardMQTTHelper mqttHelperCoreIoT; //CORE IOT
+    String deviceId = secretKey.coreIoT_deviceId; // ID của thiết bị vi xử lý
+    String authToken = secretKey.coreIoT_authToken; // JWT token của người dùng
+
     TextView txtTemp, txtLight, txtHumi;
     LabeledSwitch btn1, btn2, btn3;
 
@@ -76,6 +76,8 @@ public class FragmentHome extends Fragment {
     private ArrayList<Scheduler> taskList;
     private Handler handler = new Handler();
     private Runnable checkSchedulerRunnable;
+    private Handler handlerCoreIoT;
+    private Runnable runnableCoreIoT;
 
     ///====================== LINECHART ====================
     private LineChart tempChart;
@@ -91,33 +93,15 @@ public class FragmentHome extends Fragment {
     LineData lineData_light;
     LineData lineData_humi;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public FragmentHome() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentHome.
-     */
     // TODO: Rename and change types and number of parameters
     public static FragmentHome newInstance(String param1, String param2) {
         FragmentHome fragment = new FragmentHome();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -126,8 +110,6 @@ public class FragmentHome extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -230,86 +212,131 @@ public class FragmentHome extends Fragment {
         taskList = schedulerViewModel.getSchedulerTasks();
         startSchedulerCheck();
 
-
+//        #################### ADAFRUIT #########################
         btn1.setOnToggledListener(new OnToggledListener() {
             @Override
             public void onSwitched(ToggleableView toggleableView, boolean isOn) {
-                try{
-                    if(isOn == true){
-                        sendDataMQTT( secretKey.MQTTbtn1, "1");
+//                try{
+//                    if(isOn == true){
+//                        sendDataMQTT( secretKey.MQTTbtn1, "1");
+//                    }
+//                    else{
+//                        sendDataMQTT( secretKey.MQTTbtn1, "0");
+//                    }
+//                } catch (Exception e){
+//                    e.printStackTrace();
+//                }
+                String value = isOn ? "1" : "0";
+                mqttHelperCoreIoT.updateSharedAttribute(deviceId, authToken, "led", value, new ThingsBoardMQTTHelper.Callback() {
+                    @Override
+                    public void onSuccess(JsonObject attributes) {
+                        Log.d("TB-HTTP", "Cập nhật trạng thái LED thành công");
                     }
-                    else{
-                        sendDataMQTT( secretKey.MQTTbtn1, "0");
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.e("TB-HTTP", "Không thể cập nhật trạng thái LED", t);
                     }
-                } catch (MqttException e){
-                    e.printStackTrace();
-                }
+                });
             }
         });
         btn2.setOnToggledListener(new OnToggledListener() {
             @Override
             public void onSwitched(ToggleableView toggleableView, boolean isOn) {
-                try{
-                    if(isOn == true){
-                        sendDataMQTT(secretKey.MQTTbtn2, "1");
+//                try{
+//                    if(isOn == true){
+//                        sendDataMQTT(secretKey.MQTTbtn2, "1");
+//                    }
+//                    else{
+//                        sendDataMQTT(secretKey.MQTTbtn2, "0");
+//                    }
+//                } catch (Exception e){
+//                    e.printStackTrace();
+//                }
+                String value = isOn ? "1" : "0";
+                mqttHelperCoreIoT.updateSharedAttribute(deviceId, authToken, "fan", value, new ThingsBoardMQTTHelper.Callback() {
+                    @Override
+                    public void onSuccess(JsonObject attributes) {
+                        Log.d("TB-HTTP", "Cập nhật trạng thái LED thành công");
                     }
-                    else{
-                        sendDataMQTT(secretKey.MQTTbtn2, "0");
-                        sendDataMQTT(secretKey.MQTTcambienchay, "1");
-                        sendDataMQTT(secretKey.MQTTcambiengas, "1");
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.e("TB-HTTP", "Không thể cập nhật trạng thái LED", t);
                     }
-                } catch (MqttException e){
-                    e.printStackTrace();
-                }
+                });
             }
         });
         btn3.setOnToggledListener(new OnToggledListener() {
             @Override
             public void onSwitched(ToggleableView toggleableView, boolean isOn) {
-                try{
-                    if(isOn == true){
-                        sendDataMQTT(secretKey.MQTTbtn3, "1");
+//                try{
+//                    if(isOn == true){
+//                        sendDataMQTT(secretKey.MQTTbtn3, "1");
+//                    }
+//                    else{
+//                        sendDataMQTT(secretKey.MQTTbtn3, "0");
+//                    }
+//                } catch (Exception e){
+//                    e.printStackTrace();
+//                }
+                String value = isOn ? "1" : "0";
+                mqttHelperCoreIoT.updateSharedAttribute(deviceId, authToken, "servo", value, new ThingsBoardMQTTHelper.Callback() {
+                    @Override
+                    public void onSuccess(JsonObject attributes) {
+                        Log.d("TB-HTTP", "Cập nhật trạng thái LED thành công");
                     }
-                    else{
-                        sendDataMQTT(secretKey.MQTTbtn3, "0");
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.e("TB-HTTP", "Không thể cập nhật trạng thái LED", t);
                     }
-                } catch (MqttException e){
-                    e.printStackTrace();
-                }
+                });
             }
         });
-
-
-        startMQTT();
+        startMQTT();   //ADAFRUIT
+        startMQTT_CoreIoT();
     }
     public void sendDataMQTT(String topic, String value) throws MqttException {
         MqttMessage msg = new MqttMessage();
         msg.setId(1234);
         msg.setQos(0);
         msg.setRetained(false);
-
         byte[] b = value.getBytes(Charset.forName("UTF-8"));
         msg.setPayload(b);
-
         try {
             mqttHelper.mqttAndroidClient.publish(topic, msg);
             //publish(topic, b, msg.getQos(), msg.isRetained());
         }
         catch(MqttException e){}
     }
+
+    public void sendDataMQTT_CoreIoT(String key, String value) {
+        String jsonPayload = "{\"" + key + "\": " + value + "}";
+        mqttHelperCoreIoT.sendTelemetry(jsonPayload);
+        mqttHelperCoreIoT.updateSharedAttribute(deviceId, authToken, key, value, new ThingsBoardMQTTHelper.Callback() {
+            @Override
+            public void onSuccess(JsonObject attributes) {
+                Log.d("TB-HTTP", "Cập nhật trạng thái thiết bị thành công");
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e("TB-HTTP", "Không thể cập nhật trạng thái thiết bị", t);
+            }
+        });
+    }
+
     public void startMQTT(){
+        //ADAFRUIT
         mqttHelper = new MQTTHelper(getView().getContext());
         mqttHelper.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
-
             }
-
             @Override
             public void connectionLost(Throwable cause) {
-
             }
-
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 Log.d("TEST", topic + "***" + message.toString());
@@ -401,11 +428,107 @@ public class FragmentHome extends Fragment {
                     }
                 }
             }
-
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) { }
         });
     }
+
+    public void startMQTT_CoreIoT() {
+        mqttHelperCoreIoT = new ThingsBoardMQTTHelper(getContext());
+        // Thiết lập Handler để lấy dữ liệu định kỳ
+        handlerCoreIoT = new Handler();
+        runnableCoreIoT = new Runnable() {
+            @Override
+            public void run() {
+                mqttHelperCoreIoT.getSharedAttributes(deviceId, authToken, new ThingsBoardMQTTHelper.Callback() {
+                    @Override
+                    public void onSuccess(JsonObject attributes) {
+                        Log.d("TB-HTTP", "Received attributes: " + attributes.toString());
+                        if (attributes.isJsonObject()) {
+                            JsonObject attrObject = attributes.getAsJsonObject();
+                            if (attrObject.has("temperature")) {
+                                Log.d("TB-HTTP", "Temp: " + attrObject.get("temperature").getAsFloat());
+                            }
+                            else{
+                                Log.d("TB-HTTP", "No Temp receive" );
+                            }
+                        }
+
+                        // Xử lý dữ liệu nhiệt độ
+                        if (attributes.has("temperature")) {
+                            float temp = attributes.get("temperature").getAsFloat();
+                            txtTemp.setText(temp + "°C");
+                            checkRules("Nhiệt Độ", temp);
+                            updateChart(tempChart, temp);
+                        }
+                        // Xử lý dữ liệu độ sáng
+                        if (attributes.has("light")) {
+                            float light = attributes.get("light").getAsFloat();
+                            txtLight.setText(light + "%");
+                            checkRules("Độ Sáng", light);
+                            updateChart(lightChart, light);
+                        }
+                        // Xử lý dữ liệu độ ẩm
+                        if (attributes.has("humidity")) {
+                            float humi = attributes.get("humidity").getAsFloat();
+                            txtHumi.setText(humi + "%");
+                            checkRules("Độ Ẩm", humi);
+                            updateChart(humiChart, humi);
+                        }
+                        // Xử lý trạng thái LED
+                        if (attributes.has("led")) {
+                            int ledState = attributes.get("led").getAsInt();
+                            btn1.setOn(ledState == 1);
+                        }
+                        // Xử lý trạng thái quạt
+                        if (attributes.has("fan")) {
+                            int fanState = attributes.get("fan").getAsInt();
+                            btn2.setOn(fanState == 1);
+                        }
+                        // Xử lý trạng thái servo
+                        if (attributes.has("servo")) {
+                            int servoState = attributes.get("servo").getAsInt();
+                            btn3.setOn(servoState == 1);
+                        }
+                        // Xử lý cảnh báo cháy
+                        if (attributes.has("fire") && attributes.get("fire").getAsInt() == 1) {
+                            Toast.makeText(getContext(), "Khu vực của bạn đang gặp nguy hiểm! Có cháy!", Toast.LENGTH_LONG).show();
+                            sendNotification("Khu vực của bạn đang gặp nguy hiểm! Phát hiện cháy!");
+                            vibrateDevice();
+                        }
+                        // Xử lý cảnh báo khí độc
+                        if (attributes.has("gas") && attributes.get("gas").getAsInt() == 1) {
+                            Toast.makeText(getContext(), "Phát hiện có khí độc tại khu vực của bạn!", Toast.LENGTH_LONG).show();
+                            sendNotification("Phát hiện có khí độc tại khu vực của bạn!");
+                            vibrateDevice();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.e("TB-HTTP", "Không thể lấy dữ liệu shared attributes", t);
+                    }
+                });
+                handler.postDelayed(this, 5000); // Lặp lại mỗi 5 giây
+            }
+        };
+        handler.post(runnableCoreIoT); // Bắt đầu lấy dữ liệu
+    }
+
+    private void updateChart(LineChart chart, float value) {
+        LineData data = chart.getData();
+        if (data != null) {
+            ILineDataSet set = data.getDataSetByIndex(0);
+            if (set != null) {
+                set.addEntry(new Entry(set.getEntryCount(), value));
+                data.notifyDataChanged();
+                chart.notifyDataSetChanged();
+                chart.invalidate();
+            }
+        }
+    }
+
+
 
 
     private void checkRules(String sensorType, float sensorValue) {
@@ -431,12 +554,12 @@ public class FragmentHome extends Fragment {
                     try {
                         // Nếu điều kiện thỏa mãn, bật/tắt thiết bị theo quy tắc
                         if (rule.operation.equals("on")) {
-                            sendDataMQTT(rule.device, "1"); // Bật thiết bị
+                            sendDataMQTT_CoreIoT(rule.device, "1"); // Bật thiết bị
                         } else {
-                            sendDataMQTT(rule.device, "0"); // Tắt thiết bị
+                            sendDataMQTT_CoreIoT(rule.device, "0"); // Tắt thiết bị
                         }
                         Log.d("RuleCheck", "Rule satisfied: " + rule.sensorType + " " + rule.comparisonType + " " + rule.threshold);
-                    } catch (MqttException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -449,7 +572,7 @@ public class FragmentHome extends Fragment {
             @Override
             public void run() {
                 checkSchedulerTasks();
-                handler.postDelayed(this, 30000); // Kiểm tra mỗi phút
+                handler.postDelayed(this, 10000); // Kiểm tra mỗi 10s
             }
         };
         handler.post(checkSchedulerRunnable);
@@ -462,9 +585,25 @@ public class FragmentHome extends Fragment {
         for (Scheduler task : taskList) {
             if (task.getTime().equals(currentTime)) {
                 try {
-                    sendDataMQTT(task.getDeviceName(), task.getOnOff().equals("on") ? "1" : "0");
+                    String name = task.getDeviceName();
+                    boolean isOn = task.getOnOff().equals("on");
+                    switch(name){
+                        case secretKey.MQTTbtn1:
+                            sendDataMQTT_CoreIoT("led", isOn ? "1" : "0");
+                            btn1.setOn(isOn);
+                            break;
+                        case secretKey.MQTTbtn2:
+                            sendDataMQTT_CoreIoT("fan", isOn ? "1" : "0");
+                            btn2.setOn(isOn);
+                            break;
+                        case secretKey.MQTTbtn3:
+                            sendDataMQTT_CoreIoT("servo", isOn ? "1" : "0");
+                            btn3.setOn(isOn);
+                            break;
+                        default: break;
+                    }
                     Log.d("SchedulerCheck", "Task executed for " + task.getDeviceName() + " with action: " + task.getOnOff());
-                } catch (MqttException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -506,6 +645,30 @@ public class FragmentHome extends Fragment {
         } else {
             vibrator.vibrate(3000);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mqttHelperCoreIoT != null) {
+            try {
+                mqttHelperCoreIoT.mqttAndroidClient.disconnect();
+                Log.d("TB-MQTT", "Disconnected MQTT client");
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
+        handler.removeCallbacks(checkSchedulerRunnable); // Dừng scheduler khi fragment hủy
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mqttHelperCoreIoT != null && !mqttHelperCoreIoT.mqttAndroidClient.isConnected()) {
+            mqttHelperCoreIoT.connect();
+            Log.d("TB-MQTT", "Reconnecting MQTT client");
+        }
+        startSchedulerCheck(); // Khởi động lại scheduler khi fragment hiển thị
     }
 
 }
