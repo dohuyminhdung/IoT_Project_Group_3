@@ -25,8 +25,7 @@ python -m venv venv
 source venv/bin/activate     # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ``` 
-### 🔐 Configure Broker Credentials:
-#### For Adafruit:
+### 🔐 Configure Broker Credentials (for Adafruit broker):
 Create a file named key.py in the gateway directory with the following content:
 ```python
 secret_key = "" #🔑 Your Adafruit IO Key
