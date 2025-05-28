@@ -8,7 +8,7 @@ A simple implementation of a **Smart Home Mobile Application**.
 - 🌱 Real-time environmental monitoring 
 - 🌐 Remote control from anywhere
 - ⏰ Scheduled automatic control
-- 🛠️ Full CLI support (create, seed, leech, inspect, etc.)
+- 🚀 Automate device actions with custom scenarios
 - 🎙️ Voice command support (Adafruit broker)
 - 👁️ Facial recognition integration
 ---
