@@ -59,6 +59,7 @@ MobileApp/app/src/main/java/do_an/tkll/an_iot_app/secretKey.java
 ``
 #### 📝 Add Configuration Content:
 Replace placeholder values with your actual keys and feed info.
+You may need 2 device on CoreIoT to config the communication (1 for your Application and 1 for your MCU)
 ```bash
 public class secretKey {
      // 🔐 Adafruit IO credentials
@@ -113,7 +114,7 @@ public class secretKey {
 #### ⚠️ Note: Do not commit this file with real credentials to version control. Keep your API keys and tokens secure.
 
 ---
-### 🚀 For Adafruit
+### 🚀 For Adafruit:
 You may find some code commented out (disabled) by default like this:
 ```java
 btn3.setOnToggledListener(new OnToggledListener() {
@@ -148,7 +149,14 @@ Enable them and then disable or remove the CoreIoT logic (this is optional).
 mqttHelperCoreIoT.updateSharedAttribute(...); // ← Comment this block if using Adafruit only
 ``
 ### 🚀 For CoreIoT:
-- Keep the source code unchanged
+#### Keep the source code unchanged
+#### To enable proper functionality on the CoreIoT platform, you need to configure the Rule Chain for your devices (1 for MCU and 1 for the mobile application):
+Step 1: Navigate to the Rule Chains section in your CoreIoT dashboard.
+
+Step 2: Replace the default "Using Devices" rule chain with the custom one provided in this repository.
+
+Step 3: Import the file "CoreIoT_Rule_Chain.json" from this repository
+
 ---
 ### 📱 Testing the App
 You can run the app by:
@@ -159,5 +167,7 @@ You can run the app by:
 ## ⚙️ ESP32 Usage
 - 🚀 For CoreIoT: Upload the firmware located in ESP32_CoreIoT
 - 🚀 For Adafruit: Upload the firmware located in ESP32_Things
+### 🔄OTA Update (Available in CoreIoT only)
+For OTA updates, simply follow the [OTA setup repository](https://github.com/dohuyminhdung/IoT_Lab_3) using the firmware located in the `ESP32_CoreIoT/` folder.
 
 💡 You can use the Arduino IDE or PlatformIO to upload the code to your ESP32. Make sure the correct board and port are selected.
