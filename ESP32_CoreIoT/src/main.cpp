@@ -2,7 +2,7 @@
 
 #include <global.h>
 
-#define CURRENT_FIRMWARE_TITLE "OTA_Lab3"
+#define CURRENT_FIRMWARE_TITLE "OTA_BTL"
 #define CURRENT_FIRMWARE_VERSION "1.0.1"
 
 const uint32_t FIRE_CONFIRM_TIME_MS = 3000;
@@ -97,20 +97,20 @@ void processSharedAttributes(const JsonObjectConst &data) {
   if (data.containsKey(LED_STATE_ATTR)) {
     ledState = data[LED_STATE_ATTR].as<bool>();
     ledStateChanged = 1;
-    Serial.print("LED state is set to: ");
-    Serial.println(ledState);
+    // Serial.print("LED state is set to: ");
+    // Serial.println(ledState);
   }
   if (data.containsKey(FAN_STATE_ATTR)) {
     fanState = data[FAN_STATE_ATTR].as<bool>();
     fanStateChanged = 1;
-    Serial.print("Fan state is set to: ");
-    Serial.println(fanState);
+    // Serial.print("Fan state is set to: ");
+    // Serial.println(fanState);
   }
   if (data.containsKey(SERVO_STATE_ATTR)) {
     servoState = data[SERVO_STATE_ATTR].as<bool>();
     servoStateChanged = 1;
-    Serial.print("Servo state is set to: ");
-    Serial.println(servoState);
+    // Serial.print("Servo state is set to: ");
+    // Serial.println(servoState);
   }
 }
 
@@ -152,16 +152,20 @@ void processSharedAttributeRequest(const JsonObjectConst &data) {
 
 
 void taskWifiConnection(void* pvParameters){
-    Serial.println("Connecting to wifi...");
+    Serial.println("Connecting to AP ...");
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println("Connected to AP");
     while(1){
       // Serial.printf("WiFi status: %d\n", WiFi.status());
       if(WiFi.status() != WL_CONNECTED){
         Serial.println("WiFi disconnected, reconnecting...");
-        WiFi.disconnect();
-        WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+        WiFi.reconnect();
       }
-      vTaskDelay(3000);
+      vTaskDelay(5000);
     }
   }
 
@@ -169,21 +173,22 @@ void taskThingsBoard(void* pvParameters){
     while (1){
       if (!tb.connected()){
         Serial.println("Connecting to ThingsBoard...");
-        if (tb.connect(THINGSBOARD_SERVER, TOKEN, THINGSBOARD_PORT)){
+        if (!tb.connect(THINGSBOARD_SERVER, TOKEN, THINGSBOARD_PORT)){
           Serial.println("Failed to connect");
           vTaskDelay(5000);
           continue;
-        }
-        // tb.RPC_Subscribe(callbacks.data(), callbacks.size());
-        Serial.println("Connected to ThingsBoard");
-        if (!requestedShared) {
-          const Attribute_Request_Callback<MAX_ATTRIBUTES> sharedCallback(&processSharedAttributeRequest, REQUEST_TIMEOUT_MICROSECONDS, &requestTimedOut, SHARED_ATTRIBUTES_LIST);
-          requestedShared = attr_request.Shared_Attributes_Request(sharedCallback);
-        }
-  
-        if (!subscribedShared) {
-          const Shared_Attribute_Callback<MAX_ATTRIBUTES> callback(&processSharedAttributes, SHARED_ATTRIBUTES_LIST);
-          subscribedShared = shared_update.Shared_Attributes_Subscribe(callback);
+        }else{
+          Serial.println("Connected to ThingsBoard");
+          // Share_attribute 
+
+          if (!requestedShared) {
+            const Attribute_Request_Callback<MAX_ATTRIBUTES> sharedCallback(&processSharedAttributeRequest, REQUEST_TIMEOUT_MICROSECONDS, &requestTimedOut, SHARED_ATTRIBUTES_LIST);
+            requestedShared = attr_request.Shared_Attributes_Request(sharedCallback);
+          }
+          if (!subscribedShared) {
+            const Shared_Attribute_Callback<MAX_ATTRIBUTES> callback(&processSharedAttributes, SHARED_ATTRIBUTES_LIST);
+            subscribedShared = shared_update.Shared_Attributes_Subscribe(callback);
+          }
         }
       }
       if (!currentFWSent) {
@@ -247,8 +252,14 @@ void taskMQTT(void* pvParameters){
 void outputControl(void* pvParameters){
   while(1){
     if(ledStateChanged){
+      Serial.printf("LED state changed: %d\n", ledState);
       ledStateChanged = 0;
-      digitalWrite(LED_PIN, bool(ledState));
+      digitalWrite(LED_PIN, bool(ledState) ? (HIGH) : (LOW));
+      if (ledState) {
+        Serial.println("LED is ON");
+      } else {
+        Serial.println("LED is OFF");
+      }
     }
     if(fanStateChanged){
       fanStateChanged = 0;
@@ -258,6 +269,7 @@ void outputControl(void* pvParameters){
       servoStateChanged = 0;
       taskServo(servoState);
     }
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 }
 
@@ -274,7 +286,7 @@ void taskSendData(void* pvParameters) {
       tb.sendAttributeData(LIGHT_KEY, light);
       tb.sendAttributeData(MQ2_KEY, mq2Value);
 
-      Serial.printf("Sent telemetry data: Temp=%.2f, Humidity=%.2f, Light=%.2f\n", temperature, humidity, light);
+      Serial.printf("Sent telemetry data: Temp=%.2f, Humidity=%.2f, Light=%.2f, MQ2=%.2f\n", temperature, humidity, light,mq2Value);
     } else {
       Serial.println("Not connected to ThingsBoard, skipping telemetry send.");
     }
@@ -310,7 +322,7 @@ void taskFire(void* pvParameters) {
         tb.sendAttributeData(FIRE_KEY, 0);
       }
     }
-    vTaskDelay(100 / portTICK_PERIOD_MS);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 }
 
@@ -323,16 +335,16 @@ void setup() {
   Serial.begin(SERIAL_DEBUG_BAUD);
   myServo.attach(SERVO_PIN);
   delay(1000);
-  // xTaskCreatePinnedToCore(taskThingsBoard, "Thingsboard Connection", 8192, NULL, 1, NULL, 1);
+  xTaskCreatePinnedToCore(taskThingsBoard, "Thingsboard Connection", 8192, NULL, 1, NULL, 1);
   xTaskCreatePinnedToCore(taskWifiConnection, "WiFi Connection", 4096, NULL, 1, NULL, 0);
-  xTaskCreatePinnedToCore(taskDHT11, "Temperature and Humidity", 4096, NULL, 1, NULL, 1);  
-  xTaskCreatePinnedToCore(taskOLED, "OLED Display", 4096, NULL, 1, NULL, 1);
-  xTaskCreatePinnedToCore(taskMQTT, "MQTT Task", 8192, NULL, 1, NULL, 1);
-  xTaskCreatePinnedToCore(taskLightSensor, "Light Sensor", 4096, NULL, 1, NULL, 1);
-  xTaskCreatePinnedToCore(taskMQ2, "MQ2 Sensor", 4096, NULL, 1, NULL, 1);
-  xTaskCreatePinnedToCore(taskSendData, "Sending Data", 4096, NULL, 1, NULL, 1);
-  xTaskCreatePinnedToCore(outputControl, "Output Control", 4096, NULL, 1, NULL, 1);
-  xTaskCreatePinnedToCore(taskFire, "Fire Detection", 4096, NULL, 1, NULL, 1);
+  // xTaskCreatePinnedToCore(taskDHT11, "Temperature and Humidity", 4096, NULL, 1, NULL, 1);  
+  // xTaskCreatePinnedToCore(taskOLED, "OLED Display", 4096, NULL, 1, NULL, 1);
+  // xTaskCreatePinnedToCore(taskMQTT, "MQTT Task", 8192, NULL, 1, NULL, 1);
+  // xTaskCreatePinnedToCore(taskLightSensor, "Light Sensor", 4096, NULL, 1, NULL, 1);
+  // xTaskCreatePinnedToCore(taskMQ2, "MQ2 Sensor", 4096, NULL, 1, NULL, 1);
+  // xTaskCreatePinnedToCore(taskSendData, "Sending Data", 4096, NULL, 1, NULL, 1);
+  // xTaskCreatePinnedToCore(outputControl, "Output Control", 4096, NULL, 1, NULL, 0);
+  // xTaskCreatePinnedToCore(taskFire, "Fire Detection", 4096, NULL, 1, NULL, 1);
 }
 
 void loop() {
